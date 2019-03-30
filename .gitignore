@@ -114,14 +114,11 @@ dev_venv/
 
 # temp output
 data/*
+temp/*
+*.h5
 
 # OSX
 .DS_Store
 
 # KEY SECRET
 SECRET
-
-
-orig
-jpg
-*.h5

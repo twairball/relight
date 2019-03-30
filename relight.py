@@ -3,8 +3,6 @@ Relight
 
 Detects key subject person and adjusts brightness. 
 """
-
-
 import cv2
 import numpy as np
 import os
@@ -14,6 +12,9 @@ from mrcnn import utils
 from mrcnn import model as modellib
 from mrcnn.config import Config
 
+import argparse
+
+
 """Curve table"""
 def smoothstep(x, A=255.):
     return A * 0.5 * (np.sin((x/A - 0.5 )* math.pi) + 1)
@@ -21,7 +22,6 @@ def smoothstep(x, A=255.):
 def adjust_gamma(x, A=255., gamma=1.0):
     invGamma = 1.0 / gamma
     return A * ((x / A) ** invGamma)
-
 
 
 """Mask-RCNN"""
@@ -86,7 +86,7 @@ def apply_curve(image, mask, curve_table):
     return np.where(mask_, tone_curved, image)
 
 
-def process(image):
+def process(image, model):
     results = model.detect([image], verbose=0)
     r = results[0]
     target = get_target_mask(r)
@@ -97,8 +97,34 @@ def process(image):
     return curved
 
 
-def pipeline(filepath):
+def pipeline(filepath, target_path, model):
     image = cv2.imread(filepath)
-    processed = process_image(image)
-    
-    # TODO: save image
+    processed = process(image, model)
+    cv2.imwrite(target_path, processed)
+    return
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(description="relight")
+    parser.add_argument(
+        "--src_dir", help="Source dir with [jpg|png] image files",
+        default=None, required=True)
+    parser.add_argument(
+        "--target_dir", help="Target dir with [jpg|png] image files",
+        default=None, required=True)
+    return parser.parse_args()
+
+
+if __name__ == '__main__':
+    args = parse_args()
+    src_dir = args.src_dir
+    target_dir = args.target_dir
+
+    model = prepare_model()
+
+    for f in os.listdir(src_dir):
+        filepath = os.path.join(src_dir, f)
+        outpath = os.path.join(target_dir, f)
+        pipeline(filepath, outpath, model)
+        print("saved to: ", outpath)
+
