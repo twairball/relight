@@ -35,9 +35,9 @@ def process(image, filter):
     
     return hsv_equalized(image)
 
-def pipeline(filepath, target_path):
+def pipeline(filepath, target_path, filter):
     image = cv2.imread(filepath)
-    processed = process(image)
+    processed = process(image, filter)
     cv2.imwrite(target_path, processed)
     return
 
@@ -45,10 +45,11 @@ if __name__ == '__main__':
     args = parse_args()
     src_dir = args.src_dir
     target_dir = args.target_dir
+    filter = args.filter
 
     for f in os.listdir(src_dir):
         filepath = os.path.join(src_dir, f)
         outpath = os.path.join(target_dir, f)
-        pipeline(filepath, outpath)
+        pipeline(filepath, outpath, filter)
         print("saved to: ", outpath)
 
