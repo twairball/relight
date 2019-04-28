@@ -13,7 +13,7 @@ def hsv_equalized(image):
 
 
 # CLAHE 
-def img_clahe(image):
+def clahe(image):
     # create a CLAHE object (Arguments are optional).
     clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
     lab = cv2.cvtColor(image, cv2.COLOR_BGR2LAB)

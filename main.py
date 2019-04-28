@@ -1,5 +1,6 @@
 from relight.altm_retinex import adaptive_tone_map
-from relight.hist_equalize import rgb_equalized
+from relight.hist_equalize import rgb_equalized, hsv_equalized, clahe
+from relight.dynamic_he import dhe
 import cv2
 import numpy as np
 import os
@@ -14,14 +15,25 @@ def parse_args():
     parser.add_argument(
         "--target_dir", help="Target dir with [jpg|png] image files",
         default=None, required=True)
+    parser.add_argument(
+        "--filter", help="Enhancement method, [rgb|hsv|clahe|altm|dhe] default=hsv",
+        default=None, required=True)
     return parser.parse_args()
 
-def process(image):
-    # adaptive tone map
-    tone_mapped = adaptive_tone_map(image)
-    # rgb equalized
-    equalized = rgb_equalized(tone_mapped)
-    return equalized
+def process(image, filter):
+
+    if filter == 'rgb':
+        return rgb_equalized(image)
+    elif filter == 'hsv':
+        return hsv_equalized(image)
+    elif filter == 'clahe':
+        return clahe(image)
+    elif filter == 'altm':
+        return adaptive_tone_map(image)
+    elif filter == 'dhe':
+        return dhe(image)
+    
+    return hsv_equalized(image)
 
 def pipeline(filepath, target_path):
     image = cv2.imread(filepath)
