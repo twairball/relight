@@ -15,7 +15,7 @@ from relight.guided_filter import GuidedFilter
 def adaptive_tone_map(image, radius=10, eps=0.01, kernel_ratio=0.01, eta=36.0, lamda=10.0):
     """
     Params:
-        Image: cv2 image
+        Image: cv2 image, in RGB
         radius: guided filter radius, defualt 10
         eps: default 0.01
         kernel_ratio: dilation filter kernel, size = kernel_ratio * image_shape
@@ -42,8 +42,11 @@ def adaptive_tone_map(image, radius=10, eps=0.01, kernel_ratio=0.01, eta=36.0, l
     output = cv2.merge(mapped).astype(np.uint8)
     return output
 
-def lum_global(image, eta=36.0, lamda=10.0):
-    """Global adaptation"""
+def lum_global(image):
+    """Global adaptation
+    Params:
+        image: cv2 image in RGB
+    """
     # luminance
     lw = 0.299 * image[:,:,0] + 0.587 * image[:,:,1] + 0.114 * image[:,:,2]
     lw_max = lw.max()

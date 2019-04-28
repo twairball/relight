@@ -11,3 +11,4 @@ Adjust contrast/brightness:
 
 Luminance:  L = 0.299 * X_r + 0.587 * X_g + 0.114 * X_b
 
+Guided Filter q = f(p, I) where I = guide, p = image src. 
